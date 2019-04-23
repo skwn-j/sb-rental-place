@@ -6,8 +6,7 @@ import { ScatterplotLayer } from '@deck.gl/layers';
 import { StaticMap } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-import { readStationData, readRentalData } from './readLocalFiles';
-
+import { readLocalData } from './readLocalFiles';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWluaW11cyIsImEiOiJjanVpMXQ5ZGMxNjQ4NGZwZzA5eXF5N3lsIn0.R_H6mD12p7_M0RcjKjSHnw';
 
 export const INITIAL_VIEW_STATE = {
@@ -26,8 +25,8 @@ export class Map extends Component {
     };
 
     async componentDidMount() {
-        const [rentalData, stationData] = await Promise.all([readRentalData(), readStationData()])
-        
+        const [stationData, rentalData] = await readLocalData();
+        console.log('data loading complete');
         this.setState({
             stationData,
             rentalData

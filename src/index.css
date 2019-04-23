@@ -12,3 +12,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+#mapContainer {
+  display: inline-block;
+  height: 900px;
+  width: 1200px;
+}
+
+#boardContainer { 
+  display: inline-block;
+  height: 1200px;
+  width: 300px;
+}
