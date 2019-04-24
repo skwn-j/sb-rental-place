@@ -21,12 +21,13 @@ async function readStationData() {
     return localData.filter(d => d.length === 7);
 }
 
-function parseRentalData(rawData, stationList) {
+function parseRentalData(rawData, stationData) {
+    //if it is first time, then create a file 
+    //else, open parsed file from local storage
     let parsedData = {};
-    
-    for (let station of stationList) {
+    for (let station of stationData) {
         // init data structure
-        const [stationID, stationName] = station;
+        const stationID = station[1];
         let dataOfStation = [{}, {}];
         let startData = rawData.filter(d => d[1].split('.')[0] === stationID)
         let endData = rawData.filter(d => d[3].split('.')[0] === stationID)
@@ -39,14 +40,29 @@ function parseRentalData(rawData, stationList) {
                 'usageTime': usageTime,
                 'travelDistance': travelDistance 
             }
-            
             if (!(date in dataOfStation[0])) {
-                dataOfStation[0].date = [];
+                dataOfStation[0][date] = [];
             }
-            dataOfStation[0].date.push(value)
+            dataOfStation[0][date].push(value)
         }
-        parsedData.stationID = dataOfStation;
+        for(let data of endData) {
+            const [reantalID, startPlace, startTime, endPlace, endTime, usageTime, bicycleID, travelDistance] = data;
+            const [date, time] = endTime.split(' ');
+            const value = {
+                'time': time,
+                'startPlace': startPlace,
+                'usageTime': usageTime,
+                'travelDistance': travelDistance 
+            }
+            
+            if (!(date in dataOfStation[1])) {
+                dataOfStation[1][date] = [];
+            }
+            dataOfStation[1][date].push(value)
+        }
+        parsedData[stationID] = dataOfStation;
     }
+    
     return parsedData;
 }
 
@@ -68,9 +84,8 @@ async function readRentalData() {
 
 export async function readLocalData() {
     const stationData = await readStationData();
-    console.log(stationData);
-    const stationList = stationData.filter(d => [d[1], d[2]]);
     const rawRentalData = await readRentalData();
-    const parsedRentalData = parseRentalData(rawRentalData, stationList);
+    const parsedRentalData = parseRentalData(rawRentalData, stationData);
+    console.log(parsedRentalData);
     return [stationData, parsedRentalData];
 }
