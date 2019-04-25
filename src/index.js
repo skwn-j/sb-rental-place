@@ -1,19 +1,22 @@
 /// app.js
 import React, { Component } from 'react';
 import { render } from 'react-dom';
+
+
+// react-map-gl
+import readLocalData from './readLocalFiles';
 import DeckGL from '@deck.gl/react';
 import { ScatterplotLayer } from '@deck.gl/layers';
-// react-map-gl
 import { StaticMap } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
+import './index.css';
+
+// Board Component
 
 import Board from './BoardComponent';
-import { readLocalData } from './readLocalFiles';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWluaW11cyIsImEiOiJjanVpMXQ5ZGMxNjQ4NGZwZzA5eXF5N3lsIn0.R_H6mD12p7_M0RcjKjSHnw';
 
-
-
-export const INITIAL_VIEW_STATE = {
+const INITIAL_VIEW_STATE = {
     longitude: 126.98,
     latitude: 37.56,
     zoom: 11,
@@ -22,20 +25,26 @@ export const INITIAL_VIEW_STATE = {
     bearing: 0
 };
 
-export class Map extends Component {
-    state = {
-        stationData: null,
-        board: new Board()
-    };
+class Map extends Component {
+    constructor() {
+        super();
+        this.state = {
+            stationData: null,
+            rentalData: null
+        };
+        console.log('construct');
+    }
 
     async componentDidMount() {
         const [stationData, rentalData] = await readLocalData();
-        console.log('data loading complete');
         this.setState({
             stationData,
+            rentalData
         })
-        
-        this.state.board.updateState(rentalData);
+    }
+
+    onClickHandler = (info, event) => {
+        console.log(info);
     }
 
     renderStations() {
@@ -44,25 +53,31 @@ export class Map extends Component {
             radius = 30,
         } = this.props;
 
+        console.log('render layer');
         const sclayer =
             new ScatterplotLayer({
                 id: 'stationLayer',
                 data,
                 filled: true,
+                pickable: true,
                 radiusScale: radius,
                 radiusMinPixels: 0.25,
                 getPosition: d => [+d[6], +d[5]],
-                getRadius: 1
+                getRadius: 1,
+                onClick: (info, event) => {
+                    this.onClickHandler(info, event);
+                }
             });
         return sclayer;
     }
 
-
     render() {
+        console.log('render');
         const { viewState, controller = true, baseMap = true } = this.props;
-        if (this.state.stationData != null) {
-            return (
-                <div>
+        return (
+            <div>
+                {
+                    this.state.stationData != null &&
                     <div id='mapContainer'>
                         <DeckGL
                             layers={this.renderStations()}
@@ -82,22 +97,18 @@ export class Map extends Component {
                             )}
                         </DeckGL>
                     </div>
-                    <div id='boardContainer'>
-                        <Board {...this.state.board}></Board>
+                }
+                {
+                    this.state.rentalData != null &&
+                    <div id = 'boardContainer'>
+                        <Board rentalData={this.state.rentalData}> </Board>
                     </div>
-                </div>
-            )
-        } else {
-            return (
-                <div>
-                    <h1> Loading......</h1>
-                    <Board {...this.state.board}></Board>
-                </div>
-            )
-        }
+                }
+            </div> 
+
+        )
     }
 }
-
 
 render(
     <Map />, document.getElementById('root')

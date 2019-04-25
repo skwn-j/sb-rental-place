@@ -1,91 +1,66 @@
-import iconv from 'iconv-lite'
 import Papa from 'papaparse';
-import axios from 'axios';
-import { Buffer } from 'buffer';
-
-
 
 async function readStationData() {
-    let localData = null;
-    await axios.get('assets/station/station.csv', {
-        responseType: 'arraybuffer',
-        responseEncoding: 'euk-kr'
-    }).then(res => {
-        const utf8Res = iconv.decode(Buffer.from(res.data), 'euc-kr')
-        Papa.parse(utf8Res, {
-            complete: (result) => {
-                localData = result.data;
+    const localData = await fetch('assets/station/station.csv').then(response => {
+        return response.text();
+    }).then(text => {
+        const parsedText = Papa.parse(text, {
+            complete: (res) => {
+                return res;
             }
-        });
+        })
+        return parsedText.data.filter(d => d.length === 7);
     })
-    return localData.filter(d => d.length === 7);
+    return localData;
 }
 
 function parseRentalData(rawData, stationData) {
     //if it is first time, then create a file 
     //else, open parsed file from local storage
     let parsedData = {};
-    for (let station of stationData) {
-        // init data structure
-        const stationID = station[1];
-        let dataOfStation = [{}, {}];
-        let startData = rawData.filter(d => d[1].split('.')[0] === stationID)
-        let endData = rawData.filter(d => d[3].split('.')[0] === stationID)
-        for(let data of startData) {
-            const [reantalID, startPlace, startTime, endPlace, endTime, usageTime, bicycleID, travelDistance] = data;
-            const [date, time] = startTime.split(' ');
-            const value = {
-                'time': time,
-                'endPlace': endPlace,
-                'usageTime': usageTime,
-                'travelDistance': travelDistance 
+    stationData.map(d => parsedData[d[1]] = [{}, {}])
+    for (let data of rawData) {
+        const [serialNum, startPlace, startDateTime, endPlace, endDateTime, usageTime, bicycleID, travelDistance] = data;
+        const startPlaceID = startPlace.split('.')[0];
+        const [startDate, startTime] = startDateTime.split(' ');
+        const endPlaceID = endPlace.split('.')[0];
+        const [endDate, endTime] = endDateTime.split(' ');
+        if (startPlaceID in parsedData) {
+            if (!(startDate in parsedData[startPlaceID][0])) {
+                parsedData[startPlaceID][0][startDate] = []
             }
-            if (!(date in dataOfStation[0])) {
-                dataOfStation[0][date] = [];
-            }
-            dataOfStation[0][date].push(value)
+            parsedData[startPlaceID][0][startDate].push(startTime);
         }
-        for(let data of endData) {
-            const [reantalID, startPlace, startTime, endPlace, endTime, usageTime, bicycleID, travelDistance] = data;
-            const [date, time] = endTime.split(' ');
-            const value = {
-                'time': time,
-                'startPlace': startPlace,
-                'usageTime': usageTime,
-                'travelDistance': travelDistance 
+        if (endPlaceID in parsedData) {
+            if (!(endDate in parsedData[endPlaceID][1])) {
+                parsedData[endPlaceID][1][endDate] = []
             }
-            
-            if (!(date in dataOfStation[1])) {
-                dataOfStation[1][date] = [];
-            }
-            dataOfStation[1][date].push(value)
+            parsedData[endPlaceID][1][endDate].push(endTime);
         }
-        parsedData[stationID] = dataOfStation;
     }
-    
     return parsedData;
 }
 
 async function readRentalData() {
-    let localData = null;
-    await axios.get('assets/rental/201705_sample.csv', {
-        responseType: 'arraybuffer',
-        responseEncoding: 'utf8'
-    }).then(res => {
-        const utf8Res = iconv.decode(Buffer.from(res.data), 'utf8')
-        Papa.parse(utf8Res, {
-            complete: (result) => {
-                localData = result.data;
+    const localData = await fetch('assets/rental/201705_sample.csv').then(response => {
+        return response.text();
+    }).then(text => {
+        const parsedText = Papa.parse(text, {
+            complete: (res) => {
+                return res;
             }
-        });
+        })
+        return parsedText.data.filter(d => (d.length === 8) && (d[1].split('.').length === 2) && (d[3].split('.').length === 2));
     })
-    return localData.filter(d => d.length === 8);
+    return localData;
 }
 
-export async function readLocalData() {
+async function readLocalData() {
     const stationData = await readStationData();
     const rawRentalData = await readRentalData();
-    //const parsedRentalData = parseRentalData(rawRentalData, stationData);
-    //console.log(parsedRentalData);
-    return [stationData, rawRentalData];
+    const parsedRentalData = parseRentalData(rawRentalData, stationData);
+    console.log(parsedRentalData);
+    return [stationData, parsedRentalData];
 }
+
+export default readLocalData;
