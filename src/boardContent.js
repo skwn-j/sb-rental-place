@@ -3,15 +3,31 @@ import d3 from 'd3';
 
 const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-let board = document.createElement('div');
+export let node = document.createElement('div');
 
 function translate(x, y) {
     return 'translate(' + x + ',' + y + ')';
 }
+const svgWidth = 600
+const svgHeight = 900
+
+const margin = {left:40 , right:40, top: 20, bottom: 20} 
 
 
-function draw_bar(delay) {
 
+export function drawBarChart(id, data, day) {
+    //const [id, data] = props;
+    console.log(id)
+    const [startData, endData] = data;
+    console.log(startData);
+    console.log(endData);
+    console.log(day);
+    const Object.keys(startData).filter(key => {
+        const keyToDate = new Date(key);
+        return keyToDate.getDay() == day;
+    }))
+
+    /*
     let dayButtons = board
 
     let svg_b = board
@@ -22,7 +38,7 @@ function draw_bar(delay) {
         .attr('transform', translate(10, 10));
 
     svg_b.selectAll('button')
-        /*
+        
     let bxAxis =
         svg_b
             .append('g')
@@ -76,5 +92,4 @@ function draw_bar(delay) {
     bxAxis.transition().duration(delay).call(d3.axisBottom(bx));
     byAxis.transition().duration(delay).call(d3.axisLeft(by));
         */
-    return board;
 }
