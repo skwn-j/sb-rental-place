@@ -17,16 +17,6 @@ const INITIAL_VIEW_STATE = {
     pitch: 0,
     bearing: 0
 };
-
-function _onClick(d) {
-    console.log('click');
-}
-
-function _onHover(d) {
-    console.log('hover');
-    console.log(d);
-}
-
 class Map extends Component {
     constructor(props) {
         super(props);

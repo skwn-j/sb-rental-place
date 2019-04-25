@@ -13,7 +13,7 @@ import './index.css';
 
 // Board Component
 
-import Board from './BoardComponent';
+import Board , {updateTargetID} from './BoardComponent';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWluaW11cyIsImEiOiJjanVpMXQ5ZGMxNjQ4NGZwZzA5eXF5N3lsIn0.R_H6mD12p7_M0RcjKjSHnw';
 
 const INITIAL_VIEW_STATE = {
@@ -45,6 +45,7 @@ class Map extends Component {
 
     onClickHandler = (info, event) => {
         console.log(info);
+        updateTargetID(info.object[1]);
     }
 
     renderStations() {
