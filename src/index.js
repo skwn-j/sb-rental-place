@@ -32,7 +32,6 @@ class Map extends Component {
             stationData: null,
             rentalData: null
         };
-        console.log('construct');
     }
 
     async componentDidMount() {
@@ -44,7 +43,6 @@ class Map extends Component {
     }
 
     onClickHandler = (info, event) => {
-        console.log(info);
         updateTargetID(info.object[1]);
     }
 
@@ -54,7 +52,6 @@ class Map extends Component {
             radius = 30,
         } = this.props;
 
-        console.log('render layer');
         const sclayer =
             new ScatterplotLayer({
                 id: 'stationLayer',
@@ -73,7 +70,6 @@ class Map extends Component {
     }
 
     render() {
-        console.log('render');
         const { viewState, controller = true, baseMap = true } = this.props;
         return (
             <div>

@@ -13,13 +13,11 @@ const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
 export function updateTargetID(id) {
     this.setState({targetID: id});
-    console.log(this.state);
 }
 
 class Board extends Component {
 
     constructor(props) {
-
         super(props);
         this.state = {
             rentalData: props.rentalData,
@@ -31,15 +29,25 @@ class Board extends Component {
         updateTargetID = updateTargetID.bind(this);
     }
 
-    onRadioButtonClick(id, e) {
-        console.log(id);
-    }
-
     componentDidMount() {
         this.setState({
             d3: ''
         })
+        console.log(this.state.targetID);
+        console.log(this.state.targetDay)
     }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log(nextState);
+        return true;
+    }
+
+
+    onRadioButtonClick(day, e) {
+        this.setState({targetDay: day})
+    }
+
+    
 
     
 
