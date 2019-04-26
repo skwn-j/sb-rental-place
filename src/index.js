@@ -1,7 +1,7 @@
 /// app.js
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-
+import * as d3 from 'd3';
 
 // react-map-gl
 import readLocalData from './readLocalFiles';
@@ -25,12 +25,26 @@ const INITIAL_VIEW_STATE = {
     bearing: 0
 };
 
+function getEventsInRange(time, data, range) {
+    
+    const hourLimit = (time.hour + range)%60;
+    const carry = Math.floor((time.hour + range)/60);
+    console.log(data);
+
+}
+
+
+
+
 class Map extends Component {
     constructor() {
         super();
+        const currTime = new Date(Date.now());
         this.state = {
             stationData: null,
-            rentalData: null
+            rentalData: null,
+            selectedStation: null,
+            currTime: {day: currTime.getDay(), hour: currTime.getHours(), minute: currTime.getMinutes()}
         };
     }
 
@@ -42,8 +56,19 @@ class Map extends Component {
         })
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log(nextState);
+        return true;
+    }
+
     onClickHandler = (info, event) => {
+        console.log(info);
+        this.setState({
+            selectedStation: info.object[1],
+            currTime: Date.now()
+        })
         updateTargetID(info.object[1]);
+
     }
 
     renderStations() {
@@ -61,6 +86,9 @@ class Map extends Component {
                 radiusScale: radius,
                 radiusMinPixels: 0.25,
                 getPosition: d => [+d[6], +d[5]],
+                getFillColor: d => {
+                    getEventsInRange(this.state.currTime, this.state.rentalData[d[1]], 1)
+                },
                 getRadius: 1,
                 onClick: (info, event) => {
                     this.onClickHandler(info, event);

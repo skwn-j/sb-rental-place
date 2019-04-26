@@ -1,4 +1,4 @@
-import d3 from 'd3';
+import * as d3 from 'd3';
 
 
 const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
@@ -9,63 +9,55 @@ function translate(x, y) {
     return 'translate(' + x + ',' + y + ')';
 }
 const svgWidth = 600
-const svgHeight = 900
-
-const margin = {left:40 , right:40, top: 20, bottom: 20} 
-
+const svgHeight = 600
+const margin = { left: 40, right: 40, top: 20, bottom: 20 }
+const width = svgWidth - margin.left - margin.right;
+const height = svgHeight - margin.top - margin.bottom;
 
 
 export function drawBarChart(id, data, day) {
     //const [id, data] = props;
-    console.log(id)
     const [startData, endData] = data;
-    console.log(startData);
-    console.log(endData);
-    console.log(day);
-    const Object.keys(startData).filter(key => {
+    const startKeysOfDay = Object.keys(startData).filter(key => {
         const keyToDate = new Date(key);
-        return keyToDate.getDay() == day;
-    }))
+        return keyToDate.getDay() === day;
+    });
+    console.log(startKeysOfDay);
 
-    /*
-    let dayButtons = board
+    const startDataOfDay = startData[startKeysOfDay[0]]
 
-    let svg_b = board
+    const endKeysOfDay = Object.keys(endData).filter(key => {
+        const keyToDate = new Date(key);
+        return keyToDate.getDay() === day;
+    });
+    const endDataOfDay = endData[endKeysOfDay[0]]
+
+    let svgBar = node
         .append('svg')
-        .attr('width', 280)
-        .attr('height', 880)
+        .attr('width', width)
+        .attr('height', height)
         .append('g')
-        .attr('transform', translate(10, 10));
+        .attr('transform', translate(margin.left, margin.top));
 
-    svg_b.selectAll('button')
-        
     let bxAxis =
-        svg_b
+        svgBar
             .append('g')
             .attr('class', 'xAxis')
-            .attr('transform', translate(0, height));
+            .attr('transform', translate(0, height / 2));
     let byAxis =
-        svg_b
+        svgBar
             .append('g')
             .attr('class', 'yAxis');
 
-    let isWDL = 0;
-    if (selected_wdl == 'W') isWDL = 3;
-    else if (selected_wdl == 'L') isWDL = 2;
-    else if (selected_wdl == 'D') isWDL = 1;
-    let existingTeam = [];
-    selected_rankings.forEach(function (d) {
-        existingTeam.push(d.team);
-    });
-    let bx = d3.scaleBand()
-        .domain(existingTeam)
+    let bx = d3.scaleTime()
+        .domain([0, 24])
         .range([0, width]);
-    let by = d3.scaleLinear()
-        .domain([0, d3.max(selected_rankings, d => +Object.values(d)[isWDL])])
-        .range([height, 0]);
-    let barChart = svg_b.selectAll('rect').data(selected_rankings, d => d.team);
 
-    barChart.exit().remove()
+    let by = d3.scaleLinear()
+        .domain([-10, 10])
+        .range([height, 0]);
+
+    let plusBarChart = svgBar.selectAll('plus').data(selected_rankings, d => d.team);
     let new_barData = barChart.enter()
         .append('rect')
         .attr('class', d => d.team)
@@ -88,8 +80,15 @@ export function drawBarChart(id, data, day) {
         .attr('height', d => height - by(+Object.values(d)[isWDL]))
         .attr('x', (d, i) => (width / existingTeam.length) * i)
         .attr('y', (d, i) => by(+Object.values(d)[isWDL]));
-    new_barData.transition().duration(delay).delay(delay).style('opacity', 1);
-    bxAxis.transition().duration(delay).call(d3.axisBottom(bx));
-    byAxis.transition().duration(delay).call(d3.axisLeft(by));
-        */
+
+
+
+
+    let minusBarChart = svgBar.selectAll('minus').data(selected_rankings, d => d.team);
+    barChart.exit().remove()
+
+    new_barData.transition().duration().delay().style('opacity', 1);
+    bxAxis.transition().duration().call(d3.axisBottom(bx));
+    byAxis.transition().duration().call(d3.axisLeft(by));
+
 }

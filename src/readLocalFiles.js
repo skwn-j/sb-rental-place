@@ -59,6 +59,7 @@ async function readLocalData() {
     const stationData = await readStationData();
     const rawRentalData = await readRentalData();
     const parsedRentalData = parseRentalData(rawRentalData, stationData);
+    console.log(stationData);
     console.log(parsedRentalData);
     return [stationData, parsedRentalData];
 }

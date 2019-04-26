@@ -4,7 +4,7 @@ import './index.css';
 
 import rd3 from 'react-d3-library';
 
-import { node, drawBarChart } from './boardContent';
+//import { node, drawBarChart } from './boardContent';
 
 const RD3Component = rd3.Component;
 
@@ -36,12 +36,12 @@ class Board extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log(nextState);
+        //console.log(nextState);
         const id = nextState.targetID;
         const day = nextState.targetDay;
         const data = nextState.rentalData[id]
         if(id != null && data != null) {
-            drawBarChart(id, data, day);
+            //drawBarChart(id, data, day);
             return true;
         }
         else {
