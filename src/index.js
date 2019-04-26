@@ -13,7 +13,7 @@ import './index.css';
 
 // Board Component
 
-import Board , {updateTargetID} from './BoardComponent';
+import Board, { updateTargetID } from './BoardComponent';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWluaW11cyIsImEiOiJjanVpMXQ5ZGMxNjQ4NGZwZzA5eXF5N3lsIn0.R_H6mD12p7_M0RcjKjSHnw';
 
 const INITIAL_VIEW_STATE = {
@@ -25,11 +25,42 @@ const INITIAL_VIEW_STATE = {
     bearing: 0
 };
 
-function getEventsInRange(time, data, range) {
-    
-    const hourLimit = (time.hour + range)%60;
-    const carry = Math.floor((time.hour + range)/60);
-    console.log(data);
+function getEventsInRange(day, hour, data, range) {
+    let value = 0;
+    for (let i = 0; i < range; i++) {
+        let h = hour + i;
+        let d = day;
+        if (h >= 24) {
+            h = h % 24;
+            d = (d + 1) % 7
+        }
+
+        const ks = Object.keys(data[0]).filter(key => {
+            const datekey = new Date(key);
+            return datekey.getDay() === d;
+        })
+
+        const ke = Object.keys(data[1]).filter(key => {
+            const datekey = new Date(key);
+            return datekey.getDay() === d;
+        })
+        if (ks.length > 0 ) {
+            value += data[0][ks[0]][h];
+        }
+            
+        if (ke.length > 0) {
+            value -= data[1][ke[0]][h]
+        }
+    }
+    console.log(value)
+    const color = d3.interpolateRdBu(0.5 + value / 10);
+    let [red, green, blue] = color.split(',')
+    red = red.substring(4)
+    green = green.trim()
+    blue = blue.trim()
+    blue = blue.substring(0, blue.length-1)
+
+    return [+red, +green, +blue]
 
 }
 
@@ -44,7 +75,10 @@ class Map extends Component {
             stationData: null,
             rentalData: null,
             selectedStation: null,
-            currTime: {day: currTime.getDay(), hour: currTime.getHours(), minute: currTime.getMinutes()}
+            currHour: 7,   //6 o clock
+            currDay: 1      //monday
+            //currHour: currTime.getHours(),
+            //currDay: currTime.getDay()
         };
     }
 
@@ -63,9 +97,10 @@ class Map extends Component {
 
     onClickHandler = (info, event) => {
         console.log(info);
+        const currTime = new Date(Date.now())
         this.setState({
             selectedStation: info.object[1],
-            currTime: Date.now()
+            //currHour: currTime.getHours()
         })
         updateTargetID(info.object[1]);
 
@@ -87,7 +122,8 @@ class Map extends Component {
                 radiusMinPixels: 0.25,
                 getPosition: d => [+d[6], +d[5]],
                 getFillColor: d => {
-                    getEventsInRange(this.state.currTime, this.state.rentalData[d[1]], 1)
+                    const color = getEventsInRange(this.state.currDay, this.state.currHour, this.state.rentalData[d[1]], 2)
+                    return color;
                 },
                 getRadius: 1,
                 onClick: (info, event) => {
@@ -125,11 +161,11 @@ class Map extends Component {
                 }
                 {
                     this.state.rentalData != null &&
-                    <div id = 'boardContainer'>
+                    <div id='boardContainer'>
                         <Board rentalData={this.state.rentalData}> </Board>
                     </div>
                 }
-            </div> 
+            </div>
 
         )
     }

@@ -14,6 +14,13 @@ async function readStationData() {
     return localData;
 }
 
+function hourBinning() {
+    for (let i =0; i<24; i++) {
+
+    }
+}
+
+
 function parseRentalData(rawData, stationData) {
     //if it is first time, then create a file 
     //else, open parsed file from local storage
@@ -27,15 +34,23 @@ function parseRentalData(rawData, stationData) {
         const [endDate, endTime] = endDateTime.split(' ');
         if (startPlaceID in parsedData) {
             if (!(startDate in parsedData[startPlaceID][0])) {
-                parsedData[startPlaceID][0][startDate] = []
+                parsedData[startPlaceID][0][startDate] = [];
+                for (let i =0; i<24; i++) {
+                    parsedData[startPlaceID][0][startDate].push(0);
+                }
             }
-            parsedData[startPlaceID][0][startDate].push(startTime);
+            const [startHour, startMinute] = startTime.split(":");
+            parsedData[startPlaceID][0][startDate][+startHour] += 1;
         }
         if (endPlaceID in parsedData) {
             if (!(endDate in parsedData[endPlaceID][1])) {
                 parsedData[endPlaceID][1][endDate] = []
+                for (let i =0; i<24; i++) {
+                    parsedData[endPlaceID][1][endDate].push(0);
+                }
             }
-            parsedData[endPlaceID][1][endDate].push(endTime);
+            const [endHour  , endMinute] = endTime.split(":");
+            parsedData[endPlaceID][1][endDate][+endHour] += 1;
         }
     }
     return parsedData;
