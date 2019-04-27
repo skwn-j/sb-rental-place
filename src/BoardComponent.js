@@ -1,6 +1,5 @@
 /// app.js
 import React, { Component } from 'react';
-import './index.css';
 
 import rd3 from 'react-d3-library';
 
@@ -40,14 +39,14 @@ class Board extends Component {
         const id = nextState.targetID;
         const day = nextState.targetDay;
         const data = nextState.rentalData[id]
-        if(id != null && data != null) {
+        if (id != null && data != null) {
             //drawBarChart(id, data, day);
             return true;
         }
         else {
             return false;
         }
-       
+
     }
 
 
@@ -61,16 +60,12 @@ class Board extends Component {
 
     render() {
         return (
-            <div id='boardContainer'>
-                <h1> Board </h1>
-                {this.state.targetID != null &&
-                    days.map(day => {
-                        return <button
-                            key={days.indexOf(day)}
-                            onClick={(e) => this.onRadioButtonClick(day, e)}
-                        > {day} </button>
-                    })}
-            </div>
+            days.map(day => {
+                return <button
+                    key={days.indexOf(day)}
+                    onClick={(e) => this.onRadioButtonClick(day, e)}
+                > {day} </button>
+            })
         )
     }
 }

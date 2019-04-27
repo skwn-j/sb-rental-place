@@ -13,6 +13,12 @@ code {
     monospace;
 }
 
+#timeSeriesContainer {
+  display: block;
+  height: 300px;
+  width: 1200px;
+}
+
 #mapContainer {
   display: inline-block;
   height: 900px;
