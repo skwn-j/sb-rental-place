@@ -86,11 +86,6 @@ class Map extends Component {
         };
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log(nextState);
-        return true;
-    }
-
     onClickHandler = (info, event) => {
         console.log(info);
         const currTime = new Date(Date.now())
@@ -98,7 +93,7 @@ class Map extends Component {
             selectedStation: info.object[1],
             //currHour: currTime.getHours()
         })
-        updateTargetID(info.object[1]);
+        updateTargetID(info.object[1].id);
 
     }
 

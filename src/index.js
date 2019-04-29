@@ -45,7 +45,6 @@ class App extends Component {
                     }
                 </div>
                 <div id='boardContainer'>
-                    <h1>Board</h1>
                     {
                         this.state.stationData != null &&
                         <Board rentalData={this.state.stationData}> </Board>

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 import rd3 from 'react-d3-library';
 
-//import { node, drawBarChart } from './boardContent';
+import node, { initBoardContents } from './boardContents';
 
 const RD3Component = rd3.Component;
 
@@ -23,50 +23,37 @@ class Board extends Component {
             targetDay: 0,
             d3: ''
         };
-        this.onRadioButtonClick = this.onRadioButtonClick.bind(this);
         // eslint-disable-next-line no-func-assign
         updateTargetID = updateTargetID.bind(this);
     }
 
-    componentDidMount() {
-        this.setState({
-            d3: ''
-        })
-    }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        //console.log(nextState);
-        const id = nextState.targetID;
-        const day = nextState.targetDay;
-        const data = nextState.rentalData[id]
-        if (id != null && data != null) {
-            //drawBarChart(id, data, day);
+    shouldComponentUpdate(nextProps, nextState){
+        console.log(this.state.targetID)
+        console.log(nextState.targetID);
+        if((nextState.targetID != this.state.targetID) || (this.state.targetID === null)) {
+            console.log(nextState.targetID)
+            initBoardContents(this.state.rentalData[nextState.targetID]);
+            this.setState({
+                d3: node
+            })
             return true;
         }
         else {
+            console.log('false')
             return false;
         }
-
     }
-
-
-    onRadioButtonClick(day, e) {
-        this.setState({ targetDay: days.indexOf(day) })
-    }
-
-
-
-
+    
 
     render() {
-        return (
-            days.map(day => {
-                return <button
-                    key={days.indexOf(day)}
-                    onClick={(e) => this.onRadioButtonClick(day, e)}
-                > {day} </button>
-            })
-        )
+        if (this.state.targetID == null) {
+            return <h1> board </h1>;
+        }
+        else {
+            return  <RD3Component data={this.state.d3}> </RD3Component>;
+        }
+       
     }
 }
 

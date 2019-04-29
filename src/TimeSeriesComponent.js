@@ -1,7 +1,7 @@
 /// app.js
 import React, { Component } from 'react';
 import rd3 from 'react-d3-library';
-import node, { initTimeSeries } from './timeSeriesContent';
+import node, { initTimeSeries } from './timeSeriesContents';
 const RD3Component = rd3.Component;
 
 
@@ -16,7 +16,17 @@ class TimeSeries extends Component {
         };
     }
 
+    componentDidMount() {
+        initTimeSeries(this.state.timeSeriesData);
+        this.setState({d3: node})
+    }
 
+    updateContent() {
+
+    }
+    componentDidUpdate() {
+        this.updateContent();
+    }
     render() {
         return (
             <RD3Component data={this.state.d3}></RD3Component>
