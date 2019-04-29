@@ -132,25 +132,25 @@ class Map extends Component {
     render() {
         const { viewState, controller = true, baseMap = true } = this.props;
         return (
-            <div id='mapContainer'>
-                <DeckGL
-                    layers={this.renderStations()}
-                    width={1200}
-                    height={900}
-                    initialViewState={INITIAL_VIEW_STATE}
-                    viewState={viewState}
-                    controller={controller}
-                >
-                    {baseMap && (
-                        <StaticMap
-                            reuseMaps
-                            mapStyle="mapbox://styles/mapbox/light-v9"
-                            preventStyleDiffing={true}
-                            mapboxApiAccessToken={MAPBOX_TOKEN}
-                        />
-                    )}
-                </DeckGL>
-            </div>
+
+            <DeckGL
+                layers={this.renderStations()}
+                width={1200}
+                height={900}
+                initialViewState={INITIAL_VIEW_STATE}
+                viewState={viewState}
+                controller={controller}
+            >
+                {baseMap && (
+                    <StaticMap
+                        reuseMaps
+                        mapStyle="mapbox://styles/mapbox/light-v9"
+                        preventStyleDiffing={true}
+                        mapboxApiAccessToken={MAPBOX_TOKEN}
+                    />
+                )}
+            </DeckGL>
+
         )
     }
 }

@@ -31,17 +31,17 @@ class App extends Component {
     render() {
         return (
             <div>
-                <div id='timeSeriesContainer'>
-                    <h1>Time Series</h1>
-                    {this.state.timeSeriesData != null &&
-                        <TimeSeries> timeSeriesData: {this.state.timeSeriesData} </TimeSeries>
-
-                    }
-                </div>
+                
                 <div id='mapContainer'>
                     {
                         this.state.stationData != null &&
-                        <Map stationData={this.state.stationData}>, </Map>
+                        <Map stationData={this.state.stationData}> </Map>
+                    }
+                </div>
+                <div id='timeSeriesContainer'>
+                    {this.state.timeSeriesData != null &&
+                        <TimeSeries timeSeriesData= {this.state.timeSeriesData}> </TimeSeries>
+
                     }
                 </div>
                 <div id='boardContainer'>

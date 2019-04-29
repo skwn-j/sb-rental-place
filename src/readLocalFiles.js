@@ -2,15 +2,15 @@ import Papa from 'papaparse';
 
 
 const rentalCSVFiles = [
-    '201701-02.csv',
-    '201703-04.csv',
+    //'201701-02.csv',
+    //'201703-04.csv',
     '201705.csv',
     '201706.csv',
-    '201707.csv',
+    /*'201707.csv',
     '201708.csv',
     '201709.csv',
     '201710.csv',
-    '201711-12.csv'
+    '201711-12.csv'*/
 ]
 /*
 stationData = {
@@ -100,9 +100,8 @@ function parseRentalData(rawData, stationData) {
 
 async function readRentalData() {
     let localData = []
-    //for(let fileName of rentalCSVFiles) {
-        //console.log(fileName);
-        const monthlyData = await fetch('assets/rental/'+'201705.csv').then(response => {
+    for(let fileName of rentalCSVFiles) {
+        const monthlyData = await fetch('assets/rental/'+fileName).then(response => {
             return response.text();
         }).then(text => {
             const parsedText = Papa.parse(text, {
@@ -114,7 +113,7 @@ async function readRentalData() {
         })
         
         localData = localData.concat(monthlyData);
-    //}  
+    }  
     return localData;
 }
 

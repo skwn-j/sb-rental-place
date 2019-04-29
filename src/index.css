@@ -14,7 +14,7 @@ code {
 }
 
 #timeSeriesContainer {
-  display: block;
+  display: inline-block;
   height: 300px;
   width: 1200px;
 }

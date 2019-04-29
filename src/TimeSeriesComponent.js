@@ -1,41 +1,27 @@
 /// app.js
 import React, { Component } from 'react';
-
-import * as d3 from 'd3';
 import rd3 from 'react-d3-library';
-
+import node, { initTimeSeries } from './timeSeriesContent';
 const RD3Component = rd3.Component;
 
-const [svgWidth, svgHeight] = [1200, 300];
-const margin = {
-    left: 30,
-    right: 20,
-    top: 20,
-    bottom: 30
-};
-const [width, height] = [svgWidth - margin.left - margin.right, svgHeight - margin.top - margin.bottom];
+
 
 class TimeSeries extends Component {
     constructor(props) {
         super(props);
+        initTimeSeries(props.timeSeriesData);
         this.state = {
-            timeSeriesData: props.timeSeriesData
+            timeSeriesData: props.timeSeriesData,
+            d3: node
         };
     }
 
-    componentDidMount() {
-        this.setState({
-            d3: ''
-        })
-    }
 
     render() {
         return (
-            
-                <h1> TimeseriesBoard </h1>
-            
+            <RD3Component data={this.state.d3}></RD3Component>
         )
     }
-}
+};
 
 export default TimeSeries;
