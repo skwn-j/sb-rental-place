@@ -20,6 +20,10 @@ let svg = d3.select(node).append('svg')
     .attr('height', svgHeight);
 
 
+let line = d3.line()
+    .x(function (d) { return xScale(new Date(d[0])); }) // set the x values for the line generator
+    .y(function (d) { return yScale(d[1]); }) // set the y values for the line generator 
+    .curve(d3.curveMonotoneX) // apply smoothing to the line
 let lineChart = svg.append('g')
     .attr('class', 'timeSeries')
     .attr('width', width)
@@ -53,10 +57,6 @@ export function initTimeSeries(timeSeriesData) {
         .domain([0, d3.max(data.map(d => d[1]))]).range([height, 0]);
 
 
-    let line = d3.line()
-        .x(function (d) { return xScale(new Date(d[0])); }) // set the x values for the line generator
-        .y(function (d) { return yScale(d[1]); }) // set the y values for the line generator 
-        .curve(d3.curveMonotoneX) // apply smoothing to the line
 
 
     lineChart.append('path')
@@ -85,12 +85,13 @@ export function initTimeSeries(timeSeriesData) {
 }
 
 function brushed() {
+    console.log('brush start');
     if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
     let s = d3.event.selection || xScale.range();
-    xScale.domain(s.map(xScale.invert, xScale));
-    lineChart.select('.line').attr('d', line)
-    lineChart.select('.xAxis').call(xAxisLine);
-    console.log('brush');
+    let startDate = xScale.invert(s[0]);
+    let endDate = xScale.invert(s[1]);
+    console.log(startDate);
+    console.log(endDate);
 }
 
 export default node;

@@ -1,6 +1,5 @@
 /// app.js
 import React, { Component } from 'react';
-import { render } from 'react-dom';
 import * as d3 from 'd3';
 
 // react-map-gl
@@ -11,8 +10,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Board Component
 
-import Board, { updateTargetID } from './BoardComponent';
-import Timeseries from './TimeSeriesComponent';
+import { updateTargetID } from './BoardComponent';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWluaW11cyIsImEiOiJjanVpMXQ5ZGMxNjQ4NGZwZzA5eXF5N3lsIn0.R_H6mD12p7_M0RcjKjSHnw';
 
 const INITIAL_VIEW_STATE = {
