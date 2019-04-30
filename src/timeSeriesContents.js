@@ -1,4 +1,7 @@
 import * as d3 from 'd3';
+import './timeSeries.css'
+import { setDateRange } from './MapComponent';
+
 
 let node = document.createElement('div');
 
@@ -21,12 +24,13 @@ let svg = d3.select(node).append('svg')
 
 
 let line = d3.line()
-    .x(function (d) { 
-      
-        return xScale(d[0]); }) // set the x values for the line generator
-    .y(function (d) { 
-     
-        return yScale(d[1]); }) // set the y values for the line generator 
+    .x(function (d) {
+        return xScale(d[0]);
+    }) // set the x values for the line generator
+    .y(function (d) {
+
+        return yScale(d[1]);
+    }) // set the y values for the line generator 
     .curve(d3.curveMonotoneX) // apply smoothing to the line
 let lineChart = svg.append('g')
     .attr('class', 'timeSeries')
@@ -46,13 +50,13 @@ let brush = d3.brushX()
         [0, 0],
         [width, height]
     ])
-    .on("brush end", brushed);
+    .on("end", brushed);
 
 
 
 export function initTimeSeries(timeSeriesData) {
     const data = Object.entries(timeSeriesData);
-    const startTime =data[0][0];
+    const startTime = data[0][0];
     const endTime = data[data.length - 1][0];
     xScale = d3.scaleTime()
         .domain([startTime, endTime]).range([0, width])
@@ -62,27 +66,37 @@ export function initTimeSeries(timeSeriesData) {
 
     lineChart.append('path')
         .datum(data)
-        .attr('class', 'line')
-        .attr('d', line)
-        .style('fill', 'none')
-        .style('stroke', '#ffab00')
-        .style('stroke-width', 2)
+        .attr('class', 'startLine')
+        .attr('d', line);
 
-    lineChart.selectAll(".dot")
+    lineChart.selectAll(".startDot")
         .data(data)
         .enter().append("circle") // Uses the enter().append() method
-        .attr("class", "dot") // Assign a class for styling
+        .attr("class", "startDot") // Assign a class for styling
         .attr("cx", (d) => xScale(d[0]))
         .attr("cy", (d) => yScale(d[1]))
         .attr("r", 4)
+    /*
+    lineChart.append('path')
+        .datum(endData)
+        .attr('class', 'endLine')
+        .attr('d', line);
 
-    xAxisLine.call(d3.axisBottom(xScale));
+    lineChart.selectAll(".endDot")
+        .data(endData)
+        .enter().append("circle") // Uses the enter().append() method
+        .attr("class", "endDot") // Assign a class for styling
+        .attr("cx", (d) => xScale(d[0]))
+        .attr("cy", (d) => yScale(d[1]))
+        .attr("r", 4)
+    */
+    xAxisLine.call(d3.axisBottom(xScale).ticks(d3.timeMonth));
     yAxisLine.call(d3.axisLeft(yScale));
 
     lineChart.append('g')
         .attr('class', 'brush')
         .call(brush)
-        .call(brush.move, xScale.range())
+
 }
 
 function brushed() {
@@ -91,8 +105,7 @@ function brushed() {
     let s = d3.event.selection || xScale.range();
     let startDate = xScale.invert(s[0]);
     let endDate = xScale.invert(s[1]);
-    console.log(startDate);
-    console.log(endDate);
+    setDateRange(startDate, endDate);
 }
 
 export default node;

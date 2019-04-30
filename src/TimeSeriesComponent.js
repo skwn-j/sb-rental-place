@@ -9,9 +9,10 @@ const RD3Component = rd3.Component;
 class TimeSeries extends Component {
     constructor(props) {
         super(props);
+        initTimeSeries(props.timeSeriesData);
         this.state = {
             timeSeriesData: props.timeSeriesData,
-            d3: ''
+            d3: node,
         };
     }
 
@@ -25,7 +26,7 @@ class TimeSeries extends Component {
 
 
     render() {
-        if (this.state.d3 !== '') {
+        if (this.state.d3 === node) {
             console.log('show');
             return (
                 <RD3Component data={this.state.d3}></RD3Component>

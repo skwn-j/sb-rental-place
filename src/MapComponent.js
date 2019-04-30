@@ -22,85 +22,95 @@ const INITIAL_VIEW_STATE = {
     bearing: 0
 };
 
-function getEventsInRange(day, hour, data, range) {
-    let value = 0;
-    for (let i = 0; i < range; i++) {
-        let h = hour + i;
-        let d = day;
-        if (h >= 24) {
-            h = h % 24;
-            d = (d + 1) % 7
-        }
 
-        const ks = Object.keys(data[0]).filter(key => {
-            const datekey = new Date(key);
-            return datekey.getDay() === d;
-        })
-
-        const ke = Object.keys(data[1]).filter(key => {
-            const datekey = new Date(key);
-            return datekey.getDay() === d;
-        })
-        if (ks.length > 0) {
-            value -= data[0][ks[0]][h];
-        }
-
-        if (ke.length > 0) {
-            value += data[1][ke[0]][h]
-        }
-    }
-    console.log(value)
-    if (value > 10) {
-        value = Math.max(value, 10)
-    }
-    else if (value < -10) {
-        value = Math.min(value, -10)
-    }
-
-    const color = d3.interpolateRdBu(0.5 + value / 20);
-    let [red, green, blue] = color.split(',')
-    red = red.substring(4)
-    green = green.trim()
-    blue = blue.trim()
-    blue = blue.substring(0, blue.length - 1)
-
-    return [+red, +green, +blue]
-
+export function setDateRange(startDate, endDate) {
+    this.setState({ startDate, endDate });
 }
-
 
 class Map extends Component {
     constructor(props) {
         super(props);
-        console.log(props);
-        const currTime = new Date(Date.now());
         this.state = {
             stationData: props.stationData,
-            selectedStation: null,
-            currHour: 18,   //6 o clock
-            currDay: 2      //monday
-            //currHour: currTime.getHours(),
-            //currDay: currTime.getDay()
+            startDate: null,
+            endDate: null,
+            currDay: 2,
+            currHour: 7,
+            range: 2
+
         };
+        console.log(props.stationData);
+        setDateRange = setDateRange.bind(this);
     }
 
     onClickHandler = (info, event) => {
-        console.log(info);
+        
         const currTime = new Date(Date.now())
-        this.setState({
-            selectedStation: info.object[1],
-            //currHour: currTime.getHours()
-        })
         updateTargetID(info.object[1].id);
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+       
+        return true;
+    }
+
+    componentDidMount() {
 
     }
+
+
+    getEventsInRange(data) {
+        let value = 0;
+        for (let i = 0; i < this.state.range; i++) {
+            let h = this.state.currHour + i;
+            let d = this.state.currDay;
+            if (h >= 24) {
+                h = h % 24;
+                d = (d + 1) % 7
+            }
+    
+            const ks = Object.keys(data[0]).filter(key => {
+                const datekey = new Date(key);
+                return (datekey.getDay() === d) && (Date.parse(key) >= this.state.startDate) && (Date.parse(key) <= this.state.endDate);
+            })
+    
+            const ke = Object.keys(data[1]).filter(key => {
+                const datekey = new Date(key);
+                return datekey.getDay() === d && (Date.parse(key) >= this.state.startDate) && (Date.parse(key) <= this.state.endDate);
+            })
+            if (ks.length > 0) {
+                value -= data[0][ks[0]][h];
+            }
+    
+            if (ke.length > 0) {
+                value += data[1][ke[0]][h]
+            }
+        }
+       
+        if (value > 10) {
+            value = Math.max(value, 10)
+        }
+        else if (value < -10) {
+            value = Math.min(value, -10)
+        }
+    
+        const color = d3.interpolateRdBu(0.5 + value / 20);
+        let [red, green, blue] = color.split(',')
+        red = red.substring(4)
+        green = green.trim()
+        blue = blue.trim()
+        blue = blue.substring(0, blue.length - 1)
+    
+        return [+red, +green, +blue]
+    
+    }
+    
 
     renderStations() {
         const {
             data = Object.entries(this.state.stationData),
             radius = 30,
         } = this.props;
-        console.log(data);
         const sclayer =
             new ScatterplotLayer({
                 id: 'stationLayer',
@@ -110,11 +120,19 @@ class Map extends Component {
                 radiusScale: radius,
                 radiusMinPixels: 0.25,
                 getPosition: d => [+d[1].lng, +d[1].lat],
-                /*getFillColor: d => {
-                    const color = getEventsInRange(this.state.currDay, this.state.currHour, this.state.rentalData[d[1]], 2)
-                    return color;
-                },*/
-                getRadius: 1,
+
+                getFillColor: d => {
+
+                    if (this.state.startDate == null) {
+                        return [0, 0, 0]
+                    }
+                    else {
+                        const color = this.getEventsInRange(d[1].rental)
+                        return color;
+                    }
+
+                },
+                getRadius: 3,
                 onClick: (info, event) => {
                     this.onClickHandler(info, event);
                 }

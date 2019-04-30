@@ -1,8 +1,6 @@
 /// app.js
 import React, { Component } from 'react';
-
 import rd3 from 'react-d3-library';
-
 import node, { initBoardContents } from './boardContents';
 
 const RD3Component = rd3.Component;
@@ -29,8 +27,6 @@ class Board extends Component {
 
 
     shouldComponentUpdate(nextProps, nextState){
-        console.log(this.state.targetID)
-        console.log(nextState.targetID);
         if((nextState.targetID != this.state.targetID) || (this.state.targetID === null)) {
             console.log(nextState.targetID)
             initBoardContents(this.state.rentalData[nextState.targetID]);

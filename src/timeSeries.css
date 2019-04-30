@@ -1,0 +1,11 @@
+.startLine {
+    fill: none;
+    stroke: rgb(255, 187, 0);
+    stroke-width: 2;
+}
+
+.endLine {
+    fill: none;
+    stroke: blue;
+    stroke-width: 2;
+}

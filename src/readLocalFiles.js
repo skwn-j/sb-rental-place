@@ -6,22 +6,12 @@ const rentalCSVFiles = [
     //'201703-04.csv',
     '201705.csv',
     '201706.csv',
-    /*'201707.csv',
+    '201707.csv',
     '201708.csv',
     '201709.csv',
     '201710.csv',
-    '201711-12.csv'*/
+    //'201711-12.csv'
 ]
-/*
-stationData = {
-    id:
-    name:
-    lat:
-    lng:
-    rental:
-}
-
-*/
 
 
 
@@ -46,9 +36,15 @@ function parseTimeSeriesData(rawData) {
         if(!timeSeriesData.hasOwnProperty(startDate)) {
             timeSeriesData[startDate] = 0
         }
-        timeSeriesData[startDate] += 1    
+        timeSeriesData[startDate] += 1  
+        
+        const endDate = Date.parse(data[4].split(' ')[0]);
+        if(!timeSeriesData.hasOwnProperty(endDate)) {
+            timeSeriesData[endDate] = 0
+        }
+        timeSeriesData[endDate] += 1
     }
-    //console.log(timeSeriesData);
+    console.log(timeSeriesData);
     return timeSeriesData;
 }
 
@@ -101,6 +97,7 @@ function parseRentalData(rawData, stationData) {
 async function readRentalData() {
     let localData = []
     for(let fileName of rentalCSVFiles) {
+        console.log(fileName);
         const monthlyData = await fetch('assets/rental/'+fileName).then(response => {
             return response.text();
         }).then(text => {
