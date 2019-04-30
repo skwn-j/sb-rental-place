@@ -9,28 +9,32 @@ const RD3Component = rd3.Component;
 class TimeSeries extends Component {
     constructor(props) {
         super(props);
-        initTimeSeries(props.timeSeriesData);
         this.state = {
             timeSeriesData: props.timeSeriesData,
-            d3: node
+            d3: ''
         };
     }
 
+
     componentDidMount() {
         initTimeSeries(this.state.timeSeriesData);
-        this.setState({d3: node})
+        this.setState({
+            d3: node
+        });
     }
 
-    updateContent() {
 
-    }
-    componentDidUpdate() {
-        this.updateContent();
-    }
     render() {
-        return (
-            <RD3Component data={this.state.d3}></RD3Component>
-        )
+        if (this.state.d3 !== '') {
+            console.log('show');
+            return (
+                <RD3Component data={this.state.d3}></RD3Component>
+            )
+        }
+        else {
+            return <h1>Time Series</h1>
+        }
+
     }
 };
 

@@ -21,8 +21,12 @@ let svg = d3.select(node).append('svg')
 
 
 let line = d3.line()
-    .x(function (d) { return xScale(new Date(d[0])); }) // set the x values for the line generator
-    .y(function (d) { return yScale(d[1]); }) // set the y values for the line generator 
+    .x(function (d) { 
+      
+        return xScale(d[0]); }) // set the x values for the line generator
+    .y(function (d) { 
+     
+        return yScale(d[1]); }) // set the y values for the line generator 
     .curve(d3.curveMonotoneX) // apply smoothing to the line
 let lineChart = svg.append('g')
     .attr('class', 'timeSeries')
@@ -48,15 +52,12 @@ let brush = d3.brushX()
 
 export function initTimeSeries(timeSeriesData) {
     const data = Object.entries(timeSeriesData);
-    const startTime = new Date(data[0][0]);
-    const endTime = new Date(data[data.length - 1][0]);
-
+    const startTime =data[0][0];
+    const endTime = data[data.length - 1][0];
     xScale = d3.scaleTime()
-        .domain([startTime, endTime]).range([0, width]);
+        .domain([startTime, endTime]).range([0, width])
     yScale = d3.scaleLinear()
         .domain([0, d3.max(data.map(d => d[1]))]).range([height, 0]);
-
-
 
 
     lineChart.append('path')
@@ -71,7 +72,7 @@ export function initTimeSeries(timeSeriesData) {
         .data(data)
         .enter().append("circle") // Uses the enter().append() method
         .attr("class", "dot") // Assign a class for styling
-        .attr("cx", (d) => xScale(new Date(d[0])))
+        .attr("cx", (d) => xScale(d[0]))
         .attr("cy", (d) => yScale(d[1]))
         .attr("r", 4)
 

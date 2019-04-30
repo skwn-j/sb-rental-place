@@ -42,7 +42,7 @@ async function readStationData() {
 function parseTimeSeriesData(rawData) {
     let timeSeriesData = {};
     for(let data of rawData) {
-        const startDate = data[2].split(' ')[0];
+        const startDate = Date.parse(data[2].split(' ')[0]);
         if(!timeSeriesData.hasOwnProperty(startDate)) {
             timeSeriesData[startDate] = 0
         }
