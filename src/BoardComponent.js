@@ -7,8 +7,13 @@ const RD3Component = rd3.Component;
 
 const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-export function updateTargetID(id) {
-    this.setState({ targetID: id });
+export function updateTarget(id, day, hour, range) {
+    this.setState({
+        targetID: id,
+        targetHour: hour,
+        targetDay: day,
+        targetRange: range
+    });
 }
 
 class Board extends Component {
@@ -18,18 +23,22 @@ class Board extends Component {
         this.state = {
             rentalData: props.rentalData,
             targetID: null,
-            targetDay: 0,
+            targetDay: null,
+            targetHour: null,
+            targetRange: null,
             d3: ''
         };
         // eslint-disable-next-line no-func-assign
-        updateTargetID = updateTargetID.bind(this);
+        updateTarget = updateTarget.bind(this);
     }
 
 
-    shouldComponentUpdate(nextProps, nextState){
-        if((nextState.targetID != this.state.targetID) || (this.state.targetID === null)) {
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if ((nextState.targetID != this.state.targetID) || (this.state.targetID === null)) {
             console.log(nextState.targetID)
-            initBoardContents(this.state.rentalData[nextState.targetID]);
+            initBoardContents(this.state.rentalData[nextState.targetID],
+                nextState.targetDay, nextState.targetHour, nextState.targetRange);
             this.setState({
                 d3: node
             })
@@ -40,16 +49,16 @@ class Board extends Component {
             return false;
         }
     }
-    
+
 
     render() {
         if (this.state.targetID == null) {
             return <h1> board </h1>;
         }
         else {
-            return  <RD3Component data={this.state.d3}> </RD3Component>;
+            return <RD3Component data={this.state.d3}> </RD3Component>;
         }
-       
+
     }
 }
 

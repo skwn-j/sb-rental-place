@@ -36,9 +36,12 @@ let xAxisBar = barChart.append('g')
 let yAxisBar = barChart.append('g')
     .attr('class', 'yAxis');
 
-export function initBoardContents(boardData) {
-    const depData = Object.entries(boardData.rental[0]);
-    const arrData = Object.entries(boardData.rental[1]);
+export function initBoardContents(boardData, day, hour, range) {
+    let depData = Object.entries(boardData.rental[0]);
+    let arrData = Object.entries(boardData.rental[1]);
+
+    depData = depData.filter(d => (new Date(d[0])).getDay() === day)
+    arrData = arrData.filter(d => (new Date(d[0])).getDay() === day)
     console.log(depData);
     console.log(arrData);
 
@@ -74,7 +77,14 @@ export function initBoardContents(boardData) {
         .append('rect')
         .attr('class', 'arrival')
         .attr('width', width / 24)
-        .style('fill', 'blue')
+        .style('fill', (d, i) => {
+            if((hour <= i) && (i < hour + range)) {
+                return 'black';
+            }
+            else {
+                return 'blue';
+            }
+        })
         .attr('height', d => height / 2 - yScale(d))
         .attr('x', (d, i) => (width / 24) * i)
         .attr('y', d => yScale(d))
@@ -83,7 +93,14 @@ export function initBoardContents(boardData) {
         .append('rect')
         .attr('class', 'departure')
         .attr('width', width / 24)
-        .style('fill', 'red')
+        .style('fill', (d, i) => {
+            if((hour <= i) && (i < hour + range)) {
+                return 'black';
+            }
+            else {
+                return 'red';
+            }
+        })
         .attr('height', d => height / 2 - yScale(d))
         .attr('x', (d, i) => (width / 24) * i)
         .attr('y', d => height / 2)

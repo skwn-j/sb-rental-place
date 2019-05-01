@@ -10,7 +10,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Board Component
 
-import { updateTargetID } from './BoardComponent';
+import { updateTarget } from './BoardComponent';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibWluaW11cyIsImEiOiJjanVpMXQ5ZGMxNjQ4NGZwZzA5eXF5N3lsIn0.R_H6mD12p7_M0RcjKjSHnw';
 
 const INITIAL_VIEW_STATE = {
@@ -46,7 +46,7 @@ class Map extends Component {
     onClickHandler = (info, event) => {
         
         const currTime = new Date(Date.now())
-        updateTargetID(info.object[1].id);
+        updateTarget(info.object[1].id, this.state.currDay, this.state.currHour, this.state.range);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
