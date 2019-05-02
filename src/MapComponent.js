@@ -76,7 +76,7 @@ class Map extends Component {
     
             const ke = Object.keys(data[1]).filter(key => {
                 const datekey = new Date(key);
-                return datekey.getDay() === d && (Date.parse(key) >= this.state.startDate) && (Date.parse(key) <= this.state.endDate);
+                return (datekey.getDay() === d) && (Date.parse(key) >= this.state.startDate) && (Date.parse(key) <= this.state.endDate);
             })
             if (ks.length > 0) {
                 value -= data[0][ks[0]][h];
