@@ -104,6 +104,47 @@ class Map extends Component {
         return [+red, +green, +blue]
     
     }
+
+    getEventSize(data) {
+        let value = 0;
+        for (let i = 0; i < this.state.range; i++) {
+            let h = this.state.currHour + i;
+            let d = this.state.currDay;
+            if (h >= 24) {
+                h = h % 24;
+                d = (d + 1) % 7
+            }
+    
+            const ks = Object.keys(data[0]).filter(key => {
+                const datekey = new Date(key);
+                return (datekey.getDay() === d) && (Date.parse(key) >= this.state.startDate) && (Date.parse(key) <= this.state.endDate);
+            })
+    
+            const ke = Object.keys(data[1]).filter(key => {
+                const datekey = new Date(key);
+                return datekey.getDay() === d && (Date.parse(key) >= this.state.startDate) && (Date.parse(key) <= this.state.endDate);
+            })
+            if (ks.length > 0) {
+                value += data[0][ks[0]][h];
+            }
+    
+            if (ke.length > 0) {
+                value += data[1][ke[0]][h]
+            }
+        }
+        if(value < 10) {
+            return 1;
+        }
+        else if (value < 30) {
+            return 2;
+        }
+        else if (value < 50) {
+            return 3;
+        }
+        else {
+            return 4;
+        }
+    }
     
 
     renderStations() {
@@ -132,7 +173,10 @@ class Map extends Component {
                     }
 
                 },
-                getRadius: 3,
+                getRadius: d => {
+                    const rad = this.getEventSize(d[1].rental)
+                    return rad;
+                },
                 onClick: (info, event) => {
                     this.onClickHandler(info, event);
                 }
