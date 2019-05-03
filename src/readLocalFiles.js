@@ -121,6 +121,7 @@ async function readLocalData() {
     const timeSeriesData = parseTimeSeriesData(rawRentalData);
     console.log(timeSeriesData);
     console.log(parsedRentalData);
+    console.log(parsedRentalData[390]);
     return [parsedRentalData, timeSeriesData];
 }
 

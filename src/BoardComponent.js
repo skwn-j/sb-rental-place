@@ -35,7 +35,7 @@ class Board extends Component {
 
 
     shouldComponentUpdate(nextProps, nextState) {
-        if ((nextState.targetID != this.state.targetID) || (this.state.targetID === null)) {
+        if ((nextState.targetID !== this.state.targetID) || (this.state.targetID === null)) {
             console.log(nextState.targetID)
             initBoardContents(this.state.rentalData[nextState.targetID],
                 nextState.targetDay, nextState.targetHour, nextState.targetRange);

@@ -53,10 +53,10 @@ export function initBoardContents(boardData, day, hour, range) {
     }
     depDataSum = depDataSum.map(d => Math.round(d / depData.length))
     arrDataSum = arrDataSum.map(d => Math.round(d / arrData.length))
-    console.log(depDataSum);
-    console.log(arrDataSum);
+    //console.log(depDataSum);
+    //console.log(arrDataSum);
     const max = d3.max(depDataSum.concat(arrDataSum))
-    console.log(max);
+    //console.log(max);
 
     let xScale = d3.scaleLinear()
         .domain([0, 24])

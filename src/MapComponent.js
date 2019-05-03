@@ -107,6 +107,7 @@ class Map extends Component {
 
     getEventSize(data) {
         let value = 0;
+        let size = 0;
         for (let i = 0; i < this.state.range; i++) {
             let h = this.state.currHour + i;
             let d = this.state.currDay;
@@ -124,24 +125,34 @@ class Map extends Component {
                 const datekey = new Date(key);
                 return datekey.getDay() === d && (Date.parse(key) >= this.state.startDate) && (Date.parse(key) <= this.state.endDate);
             })
-            if (ks.length > 0) {
-                value += data[0][ks[0]][h];
+
+            for(let s of ks) {
+               
+                value += data[0][s][h];
+                size++;
             }
     
-            if (ke.length > 0) {
-                value += data[1][ke[0]][h]
+            for(let e of ke) {
+                value += data[1][e][h];
+                size++;
             }
         }
-        if(value < 10) {
+        
+        if (size === 0) {
+            return 0;
+        }
+        value = value/size;
+        if(value < 5) {
             return 1;
         }
-        else if (value < 30) {
+        else if (value < 15) {
             return 2;
         }
-        else if (value < 50) {
+        else if (value < 25) {
             return 3;
         }
         else {
+           
             return 4;
         }
     }
@@ -152,6 +163,9 @@ class Map extends Component {
             data = Object.entries(this.state.stationData),
             radius = 30,
         } = this.props;
+
+
+       
         const sclayer =
             new ScatterplotLayer({
                 id: 'stationLayer',
@@ -161,6 +175,7 @@ class Map extends Component {
                 radiusScale: radius,
                 radiusMinPixels: 0.25,
                 getPosition: d => [+d[1].lng, +d[1].lat],
+                getLineColor: d => [255, 255, 255],
 
                 getFillColor: d => {
 
