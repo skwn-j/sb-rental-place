@@ -92,7 +92,6 @@ export function initTimeSeries(timeSeriesData) {
     */
     xAxisLine.call(d3.axisBottom(xScale).ticks(d3.timeMonth));
     yAxisLine.call(d3.axisLeft(yScale));
-
     lineChart.append('g')
         .attr('class', 'brush')
         .call(brush)

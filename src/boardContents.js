@@ -35,6 +35,8 @@ let xAxisBar = barChart.append('g')
     .attr('class', 'xAxis').attr('transform', translate(0, height));
 let yAxisBar = barChart.append('g')
     .attr('class', 'yAxis');
+let centerLine = barChart.append('g')
+    .attr('class', 'xAxis').attr('transform', translate(0, height/2));
 
 export function initBoardContents(boardData, day, hour, range) {
     let depData = Object.entries(boardData.rental[0]);
@@ -109,7 +111,7 @@ export function initBoardContents(boardData, day, hour, range) {
 
     xAxisBar.call(d3.axisBottom(xScale));
     yAxisBar.call(d3.axisLeft(yScale));
-    
+    centerLine.call(d3.axisBottom(xScale));
     let sum = 0;
 
     for (let i=hour; i< hour + range; i++) {
