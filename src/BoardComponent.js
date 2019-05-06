@@ -36,11 +36,18 @@ class Board extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if ((nextState.targetID !== this.state.targetID) || (this.state.targetID === null)) {
-            console.log(nextState.targetID)
-            initBoardContents(this.state.rentalData[nextState.targetID],
+            console.log(nextState)
+            const sum = initBoardContents(this.state.rentalData[nextState.targetID],
                 nextState.targetDay, nextState.targetHour, nextState.targetRange);
             this.setState({
                 d3: node
+            })
+
+            const targetData = nextState.rentalData[nextState.targetID]
+            this.setState({
+                targetName: targetData.name,
+                targetAddr: targetData.addr,
+                targetSum : sum
             })
             return true;
         }
@@ -56,7 +63,21 @@ class Board extends Component {
             return <h1> board </h1>;
         }
         else {
-            return <RD3Component data={this.state.d3}> </RD3Component>;
+            return (
+                <div >
+                    <RD3Component data={this.state.d3}> </RD3Component>
+                    <div>
+                        <h2> ID: {this.state.targetID} </h2>
+                        <h2> Name: {this.state.targetName} </h2>
+                        <h2> Address: {this.state.targetAddr} </h2>
+                        <h2> Day: {this.state.targetDay} </h2>
+                        <h2> Hour: {this.state.targetHour} </h2>
+                        <h2> Range: {this.state.targetRange} </h2>
+                        <h2> Sum: {this.state.targetSum} </h2>
+
+                    </div>
+                </div>
+            );
         }
 
     }

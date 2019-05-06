@@ -42,8 +42,7 @@ export function initBoardContents(boardData, day, hour, range) {
 
     depData = depData.filter(d => (new Date(d[0])).getDay() === day)
     arrData = arrData.filter(d => (new Date(d[0])).getDay() === day)
-    console.log(depData);
-    console.log(arrData);
+   
 
     let depDataSum = []
     let arrDataSum = []
@@ -57,7 +56,8 @@ export function initBoardContents(boardData, day, hour, range) {
     //console.log(arrDataSum);
     const max = d3.max(depDataSum.concat(arrDataSum))
     //console.log(max);
-
+    console.log(depDataSum);
+    console.log(arrDataSum);
     let xScale = d3.scaleLinear()
         .domain([0, 24])
         .range([0, width]);
@@ -109,7 +109,14 @@ export function initBoardContents(boardData, day, hour, range) {
 
     xAxisBar.call(d3.axisBottom(xScale));
     yAxisBar.call(d3.axisLeft(yScale));
+    
+    let sum = 0;
 
+    for (let i=hour; i< hour + range; i++) {
+        sum  = sum +  arrDataSum[i];
+        sum = sum - depDataSum[i];
+    }
+    return sum;
 }
 
 
