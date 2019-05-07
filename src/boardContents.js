@@ -58,8 +58,6 @@ export function initBoardContents(boardData, day, hour, range) {
     //console.log(arrDataSum);
     const max = d3.max(depDataSum.concat(arrDataSum))
     //console.log(max);
-    console.log(depDataSum);
-    console.log(arrDataSum);
     let xScale = d3.scaleLinear()
         .domain([0, 24])
         .range([0, width]);
@@ -81,12 +79,14 @@ export function initBoardContents(boardData, day, hour, range) {
         .attr('width', width / 24)
         .style('fill', (d, i) => {
             if((hour <= i) && (i < hour + range)) {
-                return 'black';
+                return 'Blue';
             }
             else {
-                return 'blue';
+                return 'RoyalBlue';
             }
         })
+        .style('stroke', 'Black')
+        .style('stroke-width', 1)
         .attr('height', d => height / 2 - yScale(d))
         .attr('x', (d, i) => (width / 24) * i)
         .attr('y', d => yScale(d))
@@ -97,12 +97,14 @@ export function initBoardContents(boardData, day, hour, range) {
         .attr('width', width / 24)
         .style('fill', (d, i) => {
             if((hour <= i) && (i < hour + range)) {
-                return 'black';
+                return 'Red';
             }
             else {
-                return 'red';
+                return 'Tomato';
             }
         })
+        .style('stroke', 'Black')
+        .style('stroke-width', 1)
         .attr('height', d => height / 2 - yScale(d))
         .attr('x', (d, i) => (width / 24) * i)
         .attr('y', d => height / 2)

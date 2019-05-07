@@ -39,11 +39,12 @@ class Map extends Component {
             range: 2
 
         };
-        console.log(props.stationData);
         setDateRange = setDateRange.bind(this);
     }
 
     onClickHandler = (info, event) => {
+        console.log(event);
+        console.log(info);
         
         const currTime = new Date(Date.now())
         updateTarget(info.object[1].id, this.state.currDay, this.state.currHour, this.state.range);
@@ -195,6 +196,7 @@ class Map extends Component {
                 onClick: (info, event) => {
                     this.onClickHandler(info, event);
                 }
+               
             });
         return sclayer;
     }
